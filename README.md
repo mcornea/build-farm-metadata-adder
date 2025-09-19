@@ -73,19 +73,32 @@ spec:
                 fieldPath: metadata.labels['job-name']
           # --- Configure your desired metadata here ---
           # Add labels as a JSON string.
+          # Use "<TIMESTAMP>" and "<RANDSTRING>" tags in both keys and values.
           - name: CUSTOM_LABELS
             value: |
               {
                 "status": "completed",
-                "stage": "testing"
+                "stage": "testing",
+                "build-<RANDSTRING>": "unique-build"
               }
           # Add annotations as a JSON string.
           # Use "<TIMESTAMP>" to have the script insert the completion time.
+          # Use "<RANDSTRING>" to have the script insert a random 8-character string.
+          # These tags work in both keys and values.
           - name: CUSTOM_ANNOTATIONS
             value: |
               {
                 "company.com/completed-at": "<TIMESTAMP>",
+                "company.com/build-id": "<RANDSTRING>",
+                "<RANDSTRING>-suffix": "some-value",
                 "tested-by": "automation-script"
               }
+          # --- Configure iteration settings (optional) ---
+          # Number of times to apply metadata updates (default: 1)
+          - name: ITERATIONS
+            value: "3"
+          # Delay between iterations (e.g., 5s, 2m, 1h) (default: no delay)
+          - name: DELAY
+            value: "10s"
   backoffLimit: 1
 ```
