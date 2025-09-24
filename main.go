@@ -72,9 +72,11 @@ func main() {
 	iterations := 1
 	if iterationsStr := os.Getenv("ITERATIONS"); iterationsStr != "" {
 		if parsed, err := strconv.Atoi(iterationsStr); err != nil {
-			log.Printf("⚠️ Warning: Invalid ITERATIONS value '%s', using default 1", iterationsStr)
-		} else if parsed < 1 {
-			log.Printf("⚠️ Warning: ITERATIONS must be at least 1, using default 1")
+			log.Printf("⚠️ Warning: Invalid ITERATIONS value '%s', no metadata will be applied. Exiting.", iterationsStr)
+			return
+		} else if parsed <= 0 {
+			log.Printf("✅ Iterations set to %d, no metadata will be applied. Exiting.", parsed)
+			return
 		} else {
 			iterations = parsed
 		}
@@ -94,6 +96,7 @@ func main() {
 	}
 
 	log.Printf("Starting metadata update with %d iterations and %v delay between iterations", iterations, delay)
+
 
 	// --- Run Multiple Iterations ---
 	for i := 1; i <= iterations; i++ {
