@@ -20,6 +20,7 @@ COPY main.go .
 # CGO_ENABLED=0 is critical for building a static binary that can run in a scratch image
 # -ldflags="-w -s" strips debug symbols to reduce the binary size
 RUN CGO_ENABLED=0 GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -a -ldflags="-w -s" -o metadata-adder .
+RUN apk add --no-cache busybox-static
 
 # ---- Final Stage ----
 # Use a minimal, empty base image
@@ -27,6 +28,7 @@ FROM scratch
 
 # Copy only the compiled binary from the builder stage
 COPY --from=builder /app/metadata-adder /metadata-adder
+COPY --from=builder /bin/busybox.static /bin/sleep
 
 # Set the entrypoint for the container
 ENTRYPOINT ["/metadata-adder"]
